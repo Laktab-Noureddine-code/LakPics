@@ -5,10 +5,10 @@ import VideosGrid from "./VideosGrid"
 function Main() {
   return (
     <div>
-        <PhotosGrid q="mountains" image_type="photo" category="all"  />
+        <PhotosGrid q="wallpaper" image_type="photo" category="all"  />
         <VideosGrid />
-        <PhotosGrid q="flowers" image_type="illustration" category="all"  />
-        <PhotosGrid q="cars" image_type="vector" category="all"  />
+        <PhotosGrid q="hunter" image_type="illustration" category="all"  />
+        <PhotosGrid q="infographics" image_type="vector" category="all"  />
     </div>
   )
 }
