@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
         hostname: "pixabay.com",
         protocol: "https",
       },
+      {
+        hostname: "cdn.pixabay.com",
+        protocol: "https",
+      },
     ],
   },
 };

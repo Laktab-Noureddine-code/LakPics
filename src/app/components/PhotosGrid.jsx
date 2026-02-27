@@ -18,46 +18,78 @@ function PhotosGrid({
 }) {
   const [photos, setPhotos] = useState([]);
   const [showCount, setShowCount] = useState(12);
-  const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+  const API_KEY =
+    process.env.NEXT_PUBLIC_API_KEY || "54815587-c44250ead61b26b11384d2280";
 
   useEffect(() => {
     const fetchPhotos = async () => {
       const baseUrl = "https://pixabay.com/api/";
-      const params = new URLSearchParams({
+      const paramsObj = {
         key: API_KEY,
-        q,
         image_type,
-        category,
         safesearch,
         lang,
-        min_width: min_width.toString(),
-        min_height: min_height.toString(),
-        colors,
         page: page.toString(),
         per_page: per_page.toString(),
-      });
+      };
 
-      const response = await fetch(`${baseUrl}?${params.toString()}`);
-      const data = await response.json();
-      setPhotos(data.hits || []);
+      if (q) paramsObj.q = q;
+      if (category) paramsObj.category = category;
+      if (min_width > 0) paramsObj.min_width = min_width.toString();
+      if (min_height > 0) paramsObj.min_height = min_height.toString();
+      if (colors) paramsObj.colors = colors;
+      if (id) paramsObj.id = id;
+
+      const params = new URLSearchParams(paramsObj);
+
+      try {
+        const response = await fetch(`${baseUrl}?${params.toString()}`);
+        const data = await response.json();
+        setPhotos(data.hits || []);
+      } catch (error) {
+        console.error("Error fetching photos:", error);
+        setPhotos([]);
+      }
     };
 
     fetchPhotos();
-  }, [q, lang, id, image_type, category, min_width, min_height, colors, safesearch, page, per_page, API_KEY]);
+  }, [
+    q,
+    lang,
+    id,
+    image_type,
+    category,
+    min_width,
+    min_height,
+    colors,
+    safesearch,
+    page,
+    per_page,
+    API_KEY,
+  ]);
 
   const handleShowMore = () => {
     setShowCount((prev) => prev + 12);
   };
 
-  const types = {illustration: <IoMdBrush/>, photo: <IoMdImage/>, vector: <IoMdImage/>, all: <IoMdImages/> };
-  
+  const types = {
+    illustration: <IoMdBrush />,
+    photo: <IoMdImage />,
+    vector: <IoMdImage />,
+    all: <IoMdImages />,
+  };
 
   return (
     <div className="px-4 py-6">
-      <h1 className="text-2xl font-semibold capitalize mb-6 flex items-center gap-2 text-gray-800">{types[image_type]} {image_type} Images</h1>
+      <h1 className="text-2xl font-semibold capitalize mb-6 flex items-center gap-2 text-gray-800">
+        {types[image_type]} {image_type} Images
+      </h1>
       <div className="mx-auto max-w-screen-xl columns-1 sm:columns-2 md:columns-3 gap-2 space-y-2">
         {photos.slice(0, showCount).map((photo) => (
-          <div key={photo.id} className="break-inside-avoid overflow-hidden rounded-xl shadow-md hover:shadow-lg transition">
+          <div
+            key={photo.id}
+            className="break-inside-avoid overflow-hidden rounded-xl shadow-md hover:shadow-lg transition"
+          >
             <Image
               src={photo.webformatURL}
               alt={photo.tags}
