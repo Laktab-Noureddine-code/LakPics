@@ -1,106 +1,163 @@
-"use client"
-import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { IoIosSearch } from 'react-icons/io';
+"use client";
+import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { Search } from "lucide-react";
 
-const Header = ({searchTerm, setSearchTerm, activeTab, setActiveTab}) => {
-  
-  const tabs = [
-    'Explore', 'Photos', 'Illustrations', 'Vectors', 'Videos'
+const Header = ({ searchTerm, setSearchTerm, activeTab, setActiveTab }) => {
+  const router = useRouter();
+  const [bgImage, setBgImage] = useState("/bg.jpg");
+  const [bgLoaded, setBgLoaded] = useState(false);
+
+  const tabs = ["Explore", "Photos", "Illustrations", "Vectors", "Videos"];
+
+  const trendingTags = [
+    "nature",
+    "wallpaper",
+    "architecture",
+    "technology",
+    "ocean",
+    "sunset",
+    "mountains",
+    "flowers",
+    "abstract",
+    "cityscape",
   ];
-  
-  const searchTags = [
-    'nature', 'office', 'sky', 'wallpaper', 'beach', 'forest', 'flowers', 'cat', 
-    'office background', 'flower', 'dog', 'money', 'iphone'
-  ];
-  
-  const [tagStartIndex, setTagStartIndex] = useState(0);
-  const visibleTags = 8;
-  
-  const scrollTags = (direction) => {
-    if (direction === 'left' && tagStartIndex > 0) {
-      setTagStartIndex(tagStartIndex - 1);
-    } else if (direction === 'right' && tagStartIndex < searchTags.length - visibleTags) {
-      setTagStartIndex(tagStartIndex + 1);
+
+  // Fetch a random high-quality background from Pixabay
+  useEffect(() => {
+    const queries = [
+      "landscape nature",
+      "ocean sunset",
+      "mountain scenery",
+      "aerial cityscape",
+      "northern lights",
+    ];
+    const randomQuery = queries[Math.floor(Math.random() * queries.length)];
+    const API_KEY =
+      process.env.NEXT_PUBLIC_API_KEY || "54815587-c44250ead61b26b11384d2280";
+
+    fetch(
+      `https://pixabay.com/api/?key=${API_KEY}&q=${encodeURIComponent(
+        randomQuery,
+      )}&orientation=horizontal&image_type=photo&min_width=1920&per_page=10&safesearch=true`,
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.hits && data.hits.length > 0) {
+          const randomHit =
+            data.hits[Math.floor(Math.random() * data.hits.length)];
+          setBgImage(randomHit.largeImageURL);
+        }
+      })
+      .catch(() => {});
+  }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (searchTerm.trim()) {
+      router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
-  
+
+  const handleTagClick = (tag) => {
+    router.push(`/search?q=${encodeURIComponent(tag)}`);
+  };
+
   return (
-    <div className="relative bg-[url('/bg.jpg')] bg-cover bg-center bg-no-repeat h-[85vh] overflow-hidden before:content-[''] before:absolute before:inset-0 before:bg-gradient-to-b before:from-gray-600/90 before:to-gray-200/10 before:z-10">
+    <section className="relative w-full h-screen overflow-hidden">
+      {/* Dynamic Background Image */}
+      <img
+        src={bgImage}
+        alt="Hero background"
+        onLoad={() => setBgLoaded(true)}
+        className={`absolute inset-0 w-full h-full object-cover ${
+          bgLoaded ? "hero-bg" : "opacity-0"
+        }`}
+      />
+
+      {/* Dark cinematic overlay */}
+      <div
+        className="absolute inset-0 z-[1]"
+        style={{
+          background:
+            "linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.3) 35%, rgba(0,0,0,0.2) 60%, rgba(0,0,0,0.85) 100%)",
+        }}
+      />
+
       {/* Content */}
-      <div className="relative z-10 flex flex-col items-center justify-center h-[85vh] px-4">
-        {/* Main heading */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white text-center mb-8 max-w-4xl leading-tight">
-          Discover breathtaking royalty-free images and stock content
+      <div className="relative z-[2] flex flex-col items-center justify-center h-full px-6 hero-content">
+        {/* Tagline */}
+        <h1
+          className="text-white font-bold text-center mb-3 max-w-5xl leading-[1.1] tracking-tight"
+          style={{ fontSize: "clamp(2rem, 5vw, 4rem)" }}
+        >
+          Discover breathtaking royalty-free
+          <br />
+          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+            images & videos
+          </span>
         </h1>
-        
-        {/* Navigation tabs */}
+
+        {/* Subtitle */}
+        <p
+          className="text-white/60 text-center mb-10 max-w-2xl font-light"
+          style={{ fontSize: "clamp(0.95rem, 2vw, 1.25rem)" }}
+        >
+          Millions of high-quality stock photos, illustrations, and vectors —
+          completely free.
+        </p>
+
+        {/* Navigation Tabs */}
         <div className="flex flex-wrap justify-center gap-2 mb-8">
           {tabs.map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`px-4 py-2 rounded-full cursor-pointer text-sm font-medium transition-all duration-200 ${
+              className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer border ${
                 activeTab === tab
-                  ? 'bg-white  outline-2 outline-gray-700 text-black shadow-xl'
-                  : 'bg-white bg-opacity-20 text-black hover:bg-opacity-30'
+                  ? "bg-white text-gray-900 shadow-lg shadow-white/20 border-white/50"
+                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white border-white/10 backdrop-blur-sm"
               }`}
             >
               {tab}
             </button>
           ))}
         </div>
-        
-        {/* Search bar */}
-        <div className="relative w-full max-w-4xl mb-8">
-          <div className="relative">
+
+        {/* Massive Search Bar */}
+        <form
+          onSubmit={handleSearch}
+          className="relative w-full max-w-3xl mb-8 search-bar-glow rounded-2xl"
+        >
+          <div className="relative flex items-center backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl shadow-black/20">
+            <Search className="absolute left-6 w-6 h-6 text-white/50" />
             <input
               type="text"
-              placeholder="Search for free Images, Videos & more"
+              placeholder="Search for free images, videos & more..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-12 pr-4 py-4 rounded-full text-gray-700 placeholder-gray-500 bg-white bg-opacity-90 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-white focus:bg-opacity-100 transition-all duration-200 text-lg"
+              className="w-full py-5 pl-16 pr-6 bg-transparent text-white text-xl placeholder-white/40 focus:outline-none rounded-2xl"
             />
-            <IoIosSearch  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-black w-6 h-6" />
           </div>
-        </div>
-        
-        {/* Search tags */}
-        <div className="flex items-center justify-center w-full max-w-4xl">
-          <button
-            onClick={() => scrollTags('left')}
-            className={`p-2 rounded-full bg-white bg-opacity-20 text-white hover:bg-opacity-30 transition-all duration-200 mr-2 ${
-              tagStartIndex === 0 ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={tagStartIndex === 0}
-          >
-            <ChevronLeft className="w-4 h-4 text-black" />
-          </button>
-          
-          <div className="flex flex-wrap justify-center gap-2 flex-1">
-            {searchTags.slice(tagStartIndex, tagStartIndex + visibleTags).map((tag, index) => (
-              <button
-                key={tag}
-                onClick={() => setSearchTerm(tag)}
-                className="px-3 py-1 rounded-full text-sm bg-white cursor-pointer  bg-opacity-20 text-black hover:bg-opacity-30 transition-all duration-200 backdrop-blur-sm"
-              >
-                {tag}
-              </button>
-            ))}
-          </div>
-          
-          <button
-            onClick={() => scrollTags('right')}
-            className={`p-2 rounded-full bg-white bg-opacity-20 text-black hover:bg-opacity-30 transition-all duration-200 ml-2 ${
-              tagStartIndex >= searchTags.length - visibleTags ? 'opacity-50 cursor-not-allowed' : ''
-            }`}
-            disabled={tagStartIndex >= searchTags.length - visibleTags}
-          >
-            <ChevronRight className="w-4 h-4 text-black" />
-          </button>
+        </form>
+
+        {/* Glassmorphism Trending Tags */}
+        <div className="flex flex-wrap items-center justify-center gap-2 max-w-3xl">
+          <span className="text-white/40 text-sm font-medium mr-1 tracking-wide uppercase">
+            Trending:
+          </span>
+          {trendingTags.map((tag) => (
+            <button
+              key={tag}
+              onClick={() => handleTagClick(tag)}
+              className="px-4 py-1.5 rounded-full text-sm text-white/75 backdrop-blur-md bg-white/10 border border-white/15 hover:bg-white/25 hover:text-white hover:scale-105 hover:border-white/30 transition-all duration-300 cursor-pointer"
+            >
+              {tag}
+            </button>
+          ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
