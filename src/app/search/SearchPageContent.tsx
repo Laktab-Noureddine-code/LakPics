@@ -1,7 +1,13 @@
 "use client";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
-import { Search, Sparkles } from "lucide-react";
+import {
+  Search,
+  Sparkles,
+  ChevronLeft,
+  ChevronRight,
+  MoreHorizontal,
+} from "lucide-react";
 import Image from "next/image";
 import MasonryGrid from "../components/MasonryGrid";
 import MediaModal from "../components/MediaModal";
@@ -60,7 +66,7 @@ export default function SearchPageContent() {
 
         if (isVideo && data.hits) {
           // Normalize video data to match image shape for MasonryGrid
-          const normalizedHits = data.hits.map((v) => ({
+          const normalizedHits = data.hits.map((v: any) => ({
             ...v,
             webformatURL:
               v.videos?.medium?.thumbnail || v.videos?.small?.thumbnail || "",
@@ -73,17 +79,9 @@ export default function SearchPageContent() {
             imageHeight:
               v.videos?.large?.height || v.videos?.medium?.height || 1080,
           }));
-          if (page === 1) {
-            setPhotos(normalizedHits);
-          } else {
-            setPhotos((prev) => [...prev, ...normalizedHits]);
-          }
+          setPhotos(normalizedHits);
         } else {
-          if (page === 1) {
-            setPhotos(data.hits || []);
-          } else {
-            setPhotos((prev) => [...prev, ...(data.hits || [])]);
-          }
+          setPhotos(data.hits || []);
         }
         setTotalHits(data.totalHits || 0);
       } catch (err) {
@@ -101,11 +99,122 @@ export default function SearchPageContent() {
     setPage(1);
   }, [query, orientation, color, category, activeType]);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     e.preventDefault();
     if (searchInput.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchInput.trim())}`);
     }
+  };
+
+  const renderPagination = () => {
+    if (totalHits === 0) return null;
+
+    const totalPages = Math.ceil(totalHits / 30);
+    const maxVisiblePages = 5;
+    let startPage = Math.max(1, page - Math.floor(maxVisiblePages / 2));
+    let endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (endPage - startPage + 1 < maxVisiblePages) {
+      startPage = Math.max(1, endPage - maxVisiblePages + 1);
+    }
+
+    const pages = [];
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
+    }
+
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              setPage((p) => Math.max(1, p - 1));
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            disabled={page === 1 || loading}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all"
+            aria-label="Previous page"
+          >
+            <ChevronLeft className="w-5 h-5" />
+          </button>
+
+          {startPage > 1 && (
+            <>
+              <button
+                onClick={() => {
+                  setPage(1);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={`w-10 h-10 rounded-full text-sm font-semibold transition-all ${
+                  page === 1
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                    : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-blue-600 shadow-sm"
+                }`}
+              >
+                1
+              </button>
+              {startPage > 2 && (
+                <span className="flex items-center justify-center w-8 text-gray-400">
+                  <MoreHorizontal className="w-5 h-5" />
+                </span>
+              )}
+            </>
+          )}
+
+          {pages.map((p) => (
+            <button
+              key={p}
+              onClick={() => {
+                setPage(p);
+                window.scrollTo({ top: 0, behavior: "smooth" });
+              }}
+              className={`w-10 h-10 rounded-full text-sm font-semibold transition-all ${
+                page === p
+                  ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                  : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-blue-600 shadow-sm"
+              }`}
+            >
+              {p}
+            </button>
+          ))}
+
+          {endPage < totalPages && (
+            <>
+              {endPage < totalPages - 1 && (
+                <span className="flex items-center justify-center w-8 text-gray-400">
+                  <MoreHorizontal className="w-5 h-5" />
+                </span>
+              )}
+              <button
+                onClick={() => {
+                  setPage(totalPages);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                }}
+                className={`w-10 h-10 rounded-full text-sm font-semibold transition-all ${
+                  page === totalPages
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-500/30"
+                    : "bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-blue-600 shadow-sm"
+                }`}
+              >
+                {totalPages}
+              </button>
+            </>
+          )}
+
+          <button
+            onClick={() => {
+              setPage((p) => Math.min(totalPages, p + 1));
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
+            disabled={page >= totalPages || loading}
+            className="flex items-center justify-center w-10 h-10 rounded-full bg-white border border-gray-200 text-gray-600 hover:bg-gray-50 hover:text-blue-600 disabled:opacity-50 disabled:cursor-not-allowed shadow-sm transition-all"
+            aria-label="Next page"
+          >
+            <ChevronRight className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -115,7 +224,7 @@ export default function SearchPageContent() {
         <div className="max-w-screen-xl mx-auto px-4 py-3 flex items-center gap-4">
           {/* Logo */}
           <a href="/" className="flex-shrink-0 flex items-center gap-2">
-            <Sparkles className="w-6 h-6 text-blue-600" />
+            <Image src="/logo.svg" alt="Logo" width={32} height={32} />
             <span className="text-lg font-bold text-gray-900 hidden sm:block">
               LakPics
             </span>
@@ -173,18 +282,8 @@ export default function SearchPageContent() {
           />
         )}
 
-        {/* Load More */}
-        {photos.length > 0 && photos.length < totalHits && (
-          <div className="flex justify-center py-12">
-            <button
-              onClick={() => setPage((p) => p + 1)}
-              disabled={loading}
-              className="px-8 py-3 rounded-full bg-white text-gray-800 font-semibold border border-gray-300 shadow-sm hover:bg-gray-50 hover:shadow-md transition-all cursor-pointer disabled:opacity-50"
-            >
-              {loading ? "Loading..." : "Load more resources"}
-            </button>
-          </div>
-        )}
+        {/* Pagination Controls */}
+        {photos.length > 0 && renderPagination()}
       </main>
 
       {/* Footer */}

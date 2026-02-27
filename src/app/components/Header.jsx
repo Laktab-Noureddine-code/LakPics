@@ -93,7 +93,7 @@ const Header = ({ searchTerm, setSearchTerm, activeTab, setActiveTab }) => {
         >
           Discover breathtaking royalty-free
           <br />
-          <span className="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent">
+          <span className="text-white">
             images & videos
           </span>
         </h1>
@@ -116,7 +116,7 @@ const Header = ({ searchTerm, setSearchTerm, activeTab, setActiveTab }) => {
               className={`px-5 py-2 rounded-full text-sm font-medium transition-all duration-300 cursor-pointer border ${
                 activeTab === tab
                   ? "bg-white text-gray-900 shadow-lg shadow-white/20 border-white/50"
-                  : "bg-white/10 text-white/80 hover:bg-white/20 hover:text-white border-white/10 backdrop-blur-sm"
+                  : "bg-white/10 text-white hover:bg-white/20 hover:text-white border-white/10 backdrop-blur-sm"
               }`}
             >
               {tab}
@@ -130,27 +130,27 @@ const Header = ({ searchTerm, setSearchTerm, activeTab, setActiveTab }) => {
           className="relative w-full max-w-3xl mb-8 search-bar-glow rounded-2xl"
         >
           <div className="relative flex items-center backdrop-blur-xl bg-white/10 border border-white/20 rounded-2xl shadow-2xl shadow-black/20">
-            <Search className="absolute left-6 w-6 h-6 text-white/50" />
+            <Search className="absolute left-6 w-6 h-6 text-white" />
             <input
               type="text"
               placeholder="Search for free images, videos & more..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full py-5 pl-16 pr-6 bg-transparent text-white text-xl placeholder-white/40 focus:outline-none rounded-2xl"
+              className="w-full py-5 pl-16 pr-6 bg-transparent text-white text-xl placeholder-white focus:outline-none rounded-2xl"
             />
           </div>
         </form>
 
         {/* Glassmorphism Trending Tags */}
         <div className="flex flex-wrap items-center justify-center gap-2 max-w-3xl">
-          <span className="text-white/40 text-sm font-medium mr-1 tracking-wide uppercase">
+          <span className="text-white text-sm font-medium mr-1 tracking-wide uppercase">
             Trending:
           </span>
           {trendingTags.map((tag) => (
             <button
               key={tag}
               onClick={() => handleTagClick(tag)}
-              className="px-4 py-1.5 rounded-full text-sm text-white/75 backdrop-blur-md bg-white/10 border border-white/15 hover:bg-white/25 hover:text-white hover:scale-105 hover:border-white/30 transition-all duration-300 cursor-pointer"
+              className="px-4 py-1.5 rounded-full text-sm text-white backdrop-blur-md bg-white/10 border border-white/15 hover:bg-white/25 hover:text-white hover:scale-105 hover:border-white/30 transition-all duration-300 cursor-pointer"
             >
               {tag}
             </button>
