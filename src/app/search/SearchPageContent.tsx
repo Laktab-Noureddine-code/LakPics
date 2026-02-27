@@ -9,9 +9,9 @@ import {
   MoreHorizontal,
 } from "lucide-react";
 import Image from "next/image";
-import MasonryGrid from "../components/MasonryGrid";
-import MediaModal from "../components/MediaModal";
-import SearchFilters from "../components/SearchFilters";
+import MasonryGrid from "@/components/MasonryGrid";
+import MediaModal from "@/components/MediaModal";
+import SearchFilters from "@/components/SearchFilters";
 
 const API_KEY =
   process.env.NEXT_PUBLIC_API_KEY || "54815587-c44250ead61b26b11384d2280";
@@ -278,7 +278,7 @@ export default function SearchPageContent() {
         ) : (
           <MasonryGrid
             photos={photos}
-            onPhotoClick={(photo) => setSelectedPhoto(photo)}
+            onPhotoClick={(photo: any) => setSelectedPhoto(photo)}
           />
         )}
 

@@ -53,6 +53,17 @@ const IMAGE_TYPES = [
   { label: "Videos", value: "video" },
 ];
 
+interface SearchFiltersProps {
+  orientation: string;
+  setOrientation: (val: string) => void;
+  color: string;
+  setColor: (val: string) => void;
+  category: string;
+  setCategory: (val: string) => void;
+  activeType: string;
+  setActiveType: (val: string) => void;
+}
+
 function SearchFilters({
   orientation,
   setOrientation,
@@ -62,10 +73,10 @@ function SearchFilters({
   setCategory,
   activeType,
   setActiveType,
-}) {
-  const [openDropdown, setOpenDropdown] = useState(null);
+}: SearchFiltersProps) {
+  const [openDropdown, setOpenDropdown] = useState<string | null>(null);
 
-  const toggleDropdown = (name) => {
+  const toggleDropdown = (name: string) => {
     setOpenDropdown(openDropdown === name ? null : name);
   };
 

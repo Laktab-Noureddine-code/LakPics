@@ -3,7 +3,19 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 
-const Header = ({ searchTerm, setSearchTerm, activeTab, setActiveTab }) => {
+interface HeaderProps {
+  searchTerm: string;
+  setSearchTerm: (term: string) => void;
+  activeTab: string;
+  setActiveTab: (tab: string) => void;
+}
+
+const Header = ({
+  searchTerm,
+  setSearchTerm,
+  activeTab,
+  setActiveTab,
+}: HeaderProps) => {
   const router = useRouter();
   const [bgImage, setBgImage] = useState("/bg.jpg");
   const [bgLoaded, setBgLoaded] = useState(false);
@@ -52,14 +64,14 @@ const Header = ({ searchTerm, setSearchTerm, activeTab, setActiveTab }) => {
       .catch(() => {});
   }, []);
 
-  const handleSearch = (e) => {
+  const handleSearch = (e: any) => {
     e.preventDefault();
     if (searchTerm.trim()) {
       router.push(`/search?q=${encodeURIComponent(searchTerm.trim())}`);
     }
   };
 
-  const handleTagClick = (tag) => {
+  const handleTagClick = (tag: string) => {
     router.push(`/search?q=${encodeURIComponent(tag)}`);
   };
 
@@ -93,9 +105,7 @@ const Header = ({ searchTerm, setSearchTerm, activeTab, setActiveTab }) => {
         >
           Discover breathtaking royalty-free
           <br />
-          <span className="text-white">
-            images & videos
-          </span>
+          <span className="text-white">images & videos</span>
         </h1>
 
         {/* Subtitle */}

@@ -3,6 +3,20 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { IoMdBrush, IoMdImage, IoMdImages } from "react-icons/io";
 
+interface PhotosGridProps {
+  q?: string;
+  lang?: string;
+  id?: string;
+  image_type?: string;
+  category?: string;
+  min_width?: number;
+  min_height?: number;
+  colors?: string;
+  safesearch?: boolean;
+  page?: number;
+  per_page?: number;
+}
+
 function PhotosGrid({
   q = "",
   lang = "en",
@@ -15,7 +29,7 @@ function PhotosGrid({
   safesearch = false,
   page = 1,
   per_page = 15,
-}) {
+}: PhotosGridProps) {
   const [photos, setPhotos] = useState([]);
   const [showCount, setShowCount] = useState(12);
   const API_KEY =
@@ -24,10 +38,10 @@ function PhotosGrid({
   useEffect(() => {
     const fetchPhotos = async () => {
       const baseUrl = "https://pixabay.com/api/";
-      const paramsObj = {
+      const paramsObj: Record<string, string> = {
         key: API_KEY,
         image_type,
-        safesearch,
+        safesearch: safesearch.toString(),
         lang,
         page: page.toString(),
         per_page: per_page.toString(),
@@ -72,7 +86,7 @@ function PhotosGrid({
     setShowCount((prev) => prev + 12);
   };
 
-  const types = {
+  const types: Record<string, React.ReactNode> = {
     illustration: <IoMdBrush />,
     photo: <IoMdImage />,
     vector: <IoMdImage />,
@@ -85,7 +99,7 @@ function PhotosGrid({
         {types[image_type]} {image_type} Images
       </h1>
       <div className="mx-auto max-w-screen-xl columns-1 sm:columns-2 md:columns-3 gap-2 space-y-2">
-        {photos.slice(0, showCount).map((photo) => (
+        {photos.slice(0, showCount).map((photo: any) => (
           <div
             key={photo.id}
             className="break-inside-avoid overflow-hidden rounded-xl shadow-md hover:shadow-lg transition"

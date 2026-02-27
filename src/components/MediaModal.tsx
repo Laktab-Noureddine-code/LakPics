@@ -10,10 +10,15 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 
-function MediaModal({ photo, onClose }) {
+interface MediaModalProps {
+  photo: any;
+  onClose: () => void;
+}
+
+function MediaModal({ photo, onClose }: MediaModalProps) {
   // Close on ESC
   const handleKeyDown = useCallback(
-    (e) => {
+    (e: any) => {
       if (e.key === "Escape") onClose();
     },
     [onClose],
@@ -39,7 +44,7 @@ function MediaModal({ photo, onClose }) {
   return (
     <div
       className="fixed inset-0 z-50 flex items-center justify-center p-4 md:p-8 modal-backdrop"
-      onClick={(e) => {
+      onClick={(e: any) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
@@ -187,7 +192,7 @@ function MediaModal({ photo, onClose }) {
                 Tags
               </h4>
               <div className="flex flex-wrap gap-2">
-                {tags.map((tag) => (
+                {tags.map((tag: string) => (
                   <span
                     key={tag}
                     className="px-3 py-1 rounded-full text-xs font-medium bg-gray-100 text-gray-600 hover:bg-gray-200 transition-colors cursor-default"
@@ -204,7 +209,7 @@ function MediaModal({ photo, onClose }) {
   );
 }
 
-function formatCount(num) {
+function formatCount(num: number) {
   if (!num) return "0";
   if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
   if (num >= 1000) return (num / 1000).toFixed(1) + "K";

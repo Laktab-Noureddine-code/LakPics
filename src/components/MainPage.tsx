@@ -62,7 +62,7 @@ function MainPage() {
         ) : (
           <MasonryGrid
             photos={trendingPhotos}
-            onPhotoClick={(photo) => setSelectedPhoto(photo)}
+            onPhotoClick={(photo: any) => setSelectedPhoto(photo)}
           />
         )}
       </section>

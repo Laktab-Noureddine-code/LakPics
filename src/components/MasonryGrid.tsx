@@ -2,7 +2,12 @@
 import Image from "next/image";
 import { Heart, Eye, Download } from "lucide-react";
 
-function MasonryGrid({ photos = [], onPhotoClick }) {
+interface MasonryGridProps {
+  photos: any[];
+  onPhotoClick?: (photo: any) => void;
+}
+
+function MasonryGrid({ photos = [], onPhotoClick }: MasonryGridProps) {
   if (photos.length === 0) {
     return (
       <div className="flex items-center justify-center py-20">
@@ -13,7 +18,7 @@ function MasonryGrid({ photos = [], onPhotoClick }) {
 
   return (
     <div className="mx-auto max-w-screen-xl columns-1 sm:columns-2 lg:columns-3 gap-4 space-y-4">
-      {photos.map((photo) => (
+      {photos.map((photo: any) => (
         <div
           key={photo.id}
           className="break-inside-avoid group relative overflow-hidden rounded-2xl cursor-pointer bg-gray-100"
@@ -75,7 +80,7 @@ function MasonryGrid({ photos = [], onPhotoClick }) {
   );
 }
 
-function formatCount(num) {
+function formatCount(num: number) {
   if (num >= 1000000) return (num / 1000000).toFixed(1) + "M";
   if (num >= 1000) return (num / 1000).toFixed(1) + "K";
   return num?.toString() || "0";
