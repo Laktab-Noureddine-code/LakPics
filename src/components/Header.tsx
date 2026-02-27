@@ -110,7 +110,7 @@ const Header = ({
 
         {/* Subtitle */}
         <p
-          className="text-white/60 text-center mb-10 max-w-2xl font-light"
+          className="text-white/90 text-center mb-10 max-w-2xl font-light"
           style={{ fontSize: "clamp(0.95rem, 2vw, 1.25rem)" }}
         >
           Millions of high-quality stock photos, illustrations, and vectors —
